@@ -1,17 +1,21 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Table v-bind:url="url" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Table from './components/Table/Table.vue';
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Table
+  },
+  data(){
+    return{
+      url: 'https://jsonplaceholder.typicode.com/posts'
+    }
   }
 }
 </script>
