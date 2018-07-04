@@ -2,12 +2,12 @@
     <div>
         <table id="dynamic-table">
             <tr>
-                <th v-for="(column, index) in table.columns" :key="index">
+                <th v-for="(column, index) in table.columns" :key="index" @click="sortHandaler(column)">
                     {{column}}
                 </th>
             </tr>
             <tr v-for="(data, index) in table.datas" :key="index">
-                <td v-for="(column, index) in table.columns" :key="index">
+                <td v-for="(column, index) in table.columns" :key="index" v-bind:contenteditable="table.editable">
                     {{data[column]}}
                 </td>
             </tr>
@@ -20,8 +20,8 @@ import axios from 'axios';
 
 export default {
     props:{
-        url:{
-            type: String,
+        config:{
+            type: Object,
             required: true
         }
     },
@@ -29,23 +29,50 @@ export default {
         return{
             table:{
                 columns: [],
-                datas:[]
+                datas:[],
+                editable: false,
+                sortable: false
             }
         }
     },
     created(){
-        let url = this.url;
+
+        let url = this.config.url;
+        let headerColumnsNumber = [];
+        this.table.editable = this.config.editable;
+        this.table.sortable = this.config.sortable;
+        
         axios.get(url).then(response=>{
              this.table.datas = response.data;
-             this.table.columns = Object.keys(response.data[0]);
+             for(let index=0;index<response.data.length;index++){
+                 headerColumnsNumber.push(Object.keys(response.data[index]).length);
+             }
+             this.table.columns = Object.keys(response.data[Math.max(...headerColumnsNumber)]);
         });
+    },
+    methods:{
+        sortHandaler(sortKey){
+            if(this.table.sortable){
+                this.table.datas.sort((a, b)=> {
+                    if (a[sortKey] > b[sortKey]) {
+                       return 1;
+                    }
+                    if (a[sortKey] < b[sortKey]) {
+                       return -1;
+                    }
+                    return 0;
+                });
+            }else{
+                return 0;
+            }     
+        }
     }
 }
 </script>
 
 <style scoped>
     #dynamic-table {
-        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
         border-collapse: collapse;
         width: 100%;
     }
@@ -65,6 +92,8 @@ export default {
         text-align: left;
         background-color: #4CAF50;
         color: white;
+        text-transform: uppercase;
+        cursor: pointer;
     }
 </style>
 

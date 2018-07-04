@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Table v-bind:url="url" />
+    <Table v-bind:config="tableConfig" />
   </div>
 </template>
 
@@ -14,7 +14,11 @@ export default {
   },
   data(){
     return{
-      url: 'https://jsonplaceholder.typicode.com/posts'
+      tableConfig:{
+           url: 'https://jsonplaceholder.typicode.com/comments',
+           editable: false,
+           sortable: true
+      }
     }
   }
 }
