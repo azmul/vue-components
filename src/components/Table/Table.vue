@@ -12,8 +12,6 @@
                 </td>
             </tr>
         </table>
-        {{table.data}}
-        {{table.columns}}
     </div>
 </template>
 
@@ -40,7 +38,6 @@ export default {
         axios.get(url).then(response=>{
              this.table.datas = response.data;
              this.table.columns = Object.keys(response.data[0]);
-             console.log(columns);
         });
     }
 }
