@@ -36,14 +36,14 @@ export default {
         }
     },
     created(){
-
         let url = this.config.url;
         let headerColumnsNumber = [];
         this.table.editable = this.config.editable;
         this.table.sortable = this.config.sortable;
         
         axios.get(url).then(response=>{
-             this.table.datas = response.data;
+            this.$store.commit('setTableDatas', response.data);
+            this.table.datas = this.$store.getters.getTableDatas;
              for(let index=0;index<response.data.length;index++){
                  headerColumnsNumber.push(Object.keys(response.data[index]).length);
              }

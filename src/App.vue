@@ -15,7 +15,7 @@ export default {
   data(){
     return{
       tableConfig:{
-           url: 'https://jsonplaceholder.typicode.com/comments',
+           url: 'https://jsonplaceholder.typicode.com/todos',
            editable: false,
            sortable: true
       }
