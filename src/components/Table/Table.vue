@@ -17,6 +17,7 @@
 
 <script>
 import axios from 'axios';
+import {SET_TABLE_DATAS} from '../../store/mutation-types';
 
 export default {
     props:{
@@ -42,7 +43,7 @@ export default {
         this.table.sortable = this.config.sortable;
         
         axios.get(url).then(response=>{
-            this.$store.commit('setTableDatas', response.data);
+            this.$store.dispatch(SET_TABLE_DATAS, response.data);
             this.table.datas = this.$store.getters.getTableDatas;
              for(let index=0;index<response.data.length;index++){
                  headerColumnsNumber.push(Object.keys(response.data[index]).length);

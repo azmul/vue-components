@@ -1,5 +1,6 @@
 import  Vue from 'vue';
 import Vuex from 'vuex';
+import {SET_TABLE_DATAS} from './mutation-types';
 
 Vue.use(Vuex);
 
@@ -14,13 +15,13 @@ export const store = new Vuex.Store({
         }
     },
     mutations:{
-        setTableDatas(state,payload){
+        [SET_TABLE_DATAS](state,payload){
            state.tableDatas = payload;
         }
     },
     actions:{
-        setTableDatas(context,payload) {
-            context.commit('setTableDatas',payload);
-        }
+        SET_TABLE_DATAS(context,payload){
+            context.commit(SET_TABLE_DATAS,payload);
+         }
     }
 }) 
