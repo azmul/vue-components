@@ -12,6 +12,9 @@ export const store = new Vuex.Store({
     getters:{
         getTableDatas: state => {
             return state.tableDatas;
+        },
+        getTableDataById: (state) => (id) =>{
+            return state.tableDatas[id];
         }
     },
     mutations:{
