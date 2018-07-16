@@ -6,7 +6,7 @@
 </template>
 
 <script>
-// import Table from './components/Table/Table.vue';
+ //import Table from './components/Table/Table.vue';
 import Table from './components/TableWithPagination/TableWithPagination.vue';
 //import Pagination from './components/Pagination/PaginationTwo.vue';
 //import Pagination from './components/Pagination/PaginationTwo.vue';
@@ -33,13 +33,10 @@ export default {
                 //   }
                 // },
                 // last_name: {
-                //   label: 'Person Last name',
+                //   label: 'Last name',
                 //   sortable: {
                 //     type: 'string'
                 //   }
-                // },
-                // first_name: {
-                //   label: 'Person First name'
                 // },
                 // date: {
                 //   label: 'Birth Date',
@@ -47,6 +44,27 @@ export default {
                 //     type: 'date'
                 //   }
                 // },
+                // first_name: {
+                //   label: 'First name'
+                // }
+                id: {
+                  label: 'ID',
+                  sortable: {
+                    type: 'number'
+                  }
+                },
+                body: {
+                  label: 'Body',
+                  sortable: {
+                    type: 'string'
+                  }
+                },
+                title: {
+                  label: 'Title',
+                  sortable: {
+                    type: 'string'
+                  }
+                }
            },
            items:[
               { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald',date: '2011-04-11T10:20:30Z' },
@@ -56,6 +74,7 @@ export default {
            ],
            paginationConfig:{
             totalRows: 100,
+            currentPage: 2,
             perPages: 10,
             size: 'medium'
           }

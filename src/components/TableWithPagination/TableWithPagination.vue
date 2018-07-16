@@ -64,8 +64,8 @@
         },
         data() {
             return {
-                currentPage: 1,
-                limit: Math.ceil(this.config.paginationConfig.totalRows / this.config.paginationConfig.perPages) || 10,
+                currentPage: this.config.paginationConfig.currentPage || 1,
+                limit: this.config.paginationConfig.perPages || 10,
                 loadingData: false,
                 table: {
                     columns: [],
@@ -175,13 +175,11 @@
                 let limit = this.limit;
                 let baseUrl = configObject.url;
                 let url = `${baseUrl}?_page=${page}&_limit=${limit}`;
-                setTimeout(async() => {
-                    let response = await axios.get(url);
-                    this.loadingData = false;
-                    configObject.items = response.data;
-                    this.tableExecuteHadaler(configObject);
-                }, 700)
-    
+                let response = await axios.get(url);
+                this.loadingData = false;
+                configObject.items = response.data;
+                this.tableExecuteHadaler(configObject);
+                
             },
             tableExecuteHadaler(configObject) {
                 if (configObject.items.length > 0) {

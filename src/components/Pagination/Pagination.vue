@@ -27,7 +27,7 @@ export default {
         return{
                 pagination:{
                     numberOfRows: Math.ceil(this.config.totalRows/this.config.perPages),
-                    page: 1,
+                    page: this.config.currentPage || 1,
                     limit: Math.ceil(this.config.totalRows/this.config.perPages),
                     size: this.config.size,
                     disableField:{
