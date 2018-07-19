@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <select-component v-model="selected" v-bind:config="selectConfig">
+    <!-- <select-component v-model="selected" v-bind:config="selectConfig">
       <optgroup v-if="selectConfig.groupOptions" v-bind:label="selectConfig.groupOptions.label">
         <option 
             v-for="(option,index) in selectConfig.groupOptions.options" 
@@ -11,9 +11,9 @@
             {{option.text}}
         </option>
       </optgroup>
-    </select-component>
+    </select-component> -->
     
-    <search v-model="selected" v-bind:config="selectConfig"></search>
+    <search v-model="selected" v-bind:config="selectSearchConfig"></search>
     Selected:{{selected}}
     <!-- <Table v-bind:config="tableConfig" /> -->
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
@@ -178,6 +178,51 @@
               }
             ]
           }
+        },
+        selectSearchConfig: {
+          options: [{
+              value: 'bangladesh',
+              text: 'Bangladesh Country'
+            },
+            {
+              value: 'Albania',
+              text: 'Albania Country'
+            },
+            {
+              value: 'Austria',
+              text: 'Austria Country'
+            },
+            {
+              value: {
+                'C': 'Bahamas'
+              },
+              text: 'Bahamas Country'
+            },
+            {
+              value: 'Belgium',
+              text: 'Belgium Country',
+              disabled: true
+            },
+            {
+              value: 'Herzegovina',
+              text: 'Herzegovina Country'
+            },
+            {
+              value: 'China',
+              text: 'China Country'
+            },
+            {
+              value: {
+                'G': 'Croatia'
+              },
+              text: 'Croatia Country'
+            },
+            {
+              value: 'Eritrea',
+              text: 'Eritrea Country',
+              disabled: true
+            }
+          ]
         }
       }
     }
