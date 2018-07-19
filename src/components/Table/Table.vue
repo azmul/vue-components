@@ -4,24 +4,28 @@
             <tr>
                 <th v-if="table.editableColumnName" 
                     v-bind:class="{'cursor-pointer': column.sortable && table.sortable }" 
-                    v-for="(column, index) in table.editableHeaderColumnsNumbers" 
-                    :key="index" @click="sortHandaler(column)">
+                    v-for="(column, editableColumnIndex) in table.editableHeaderColumnsNumbers" 
+                    :key="editableColumnIndex" @click="sortHandaler(column)">
                     <span>{{column.label}}</span>
                 </th>
                 <th v-if="!table.editableColumnName"
                     v-bind:class="{'cursor-pointer': table.sortable }" 
-                    v-for="(column, index) in table.columns" 
-                    :key="index" @click="sortHandaler(column)">
+                    v-for="(column, nonEditablecolumnIndex) in table.columns" 
+                    :key="nonEditablecolumnIndex" @click="sortHandaler(column)">
                     <span>{{column}}</span>
                 </th>
             </tr>
             <tr v-for="(item, index) in table.items" :key="index">
-                <td v-if="table.editableColumnName" v-for="(column, index) in table.editableHeaderColumnsNumbers" :key="index" v-bind:contenteditable="table.editable">
+                <td v-bind:id="index"
+                    v-if="table.editableColumnName" 
+                    v-for="(column, editableColumnIndex) in table.editableHeaderColumnsNumbers" :key="editableColumnIndex" 
+                    v-bind:contenteditable="table.editable"
+                    v-on:mouseover="mouseOverActionShow(index)">
                     <span v-if="column.sortable"><span v-if="column.sortable.type ==='date'">{{ (new Date(item[column.key])).toDateString() }}</span></span>
                     <span v-if="column.sortable"><span v-if="column.sortable.type !=='date'">{{item[column.key]}}</span></span>  
                     <span v-else>{{item[column.key]}}</span>            
                 </td>
-                <td v-if="!table.editableColumnName" v-for="(column, index) in table.columns" :key="index" v-bind:contenteditable="table.editable">
+                <td v-if="!table.editableColumnName" v-for="(column, nonEditablecolumnIndex) in table.columns" :key="nonEditablecolumnIndex" v-bind:contenteditable="table.editable">
                     <span>{{item[column]}}</span>
                 </td>
             </tr>

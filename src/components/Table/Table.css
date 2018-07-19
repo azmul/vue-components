@@ -11,7 +11,9 @@
 
 #dynamic-table tr:nth-child(even){background-color: #f2f2f2;}
 
-#dynamic-table tr:hover {background-color: #ddd;}
+#dynamic-table tr:hover {
+    background-color: #ddd;
+}
 
 #dynamic-table th {
     padding-top: 12px;

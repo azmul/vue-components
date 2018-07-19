@@ -1,0 +1,11 @@
+.small{
+    
+}
+.medium{
+    width: 300px;
+    height: calc(2.25rem + 2px);
+}
+.large{
+    width: 100%;
+    height: calc(2.25rem + 2px);
+}
