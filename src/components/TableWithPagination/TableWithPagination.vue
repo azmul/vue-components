@@ -3,24 +3,32 @@
         <div v-if="loadingData" class="loader"></div>
         <div>
             <table v-if="!loadingData" id="dynamic-table">
-                <tr>
-                    <th v-if="table.editableColumnName" v-bind:class="{'cursor-pointer': column.sortable && table.sortable }" v-for="(column, index) in table.editableHeaderColumnsNumbers" :key="index" @click="sortHandaler(column)">
-                        <span>{{column.label}}</span>
-                    </th>
-                    <th v-if="!table.editableColumnName" v-bind:class="{'cursor-pointer': table.sortable }" v-for="(column, index) in table.columns" :key="index" @click="sortHandaler(column)">
-                        <span>{{column}}</span>
-                    </th>
-                </tr>
-                <tr v-for="(item, index) in table.items" :key="index">
-                    <td  v-if="table.editableColumnName" v-for="(column, index) in table.editableHeaderColumnsNumbers" :key="index" v-bind:contenteditable="table.editable">
-                        <span v-if="column.sortable"><span v-if="column.sortable.type ==='date'">{{ (new Date(item[column.key])).toDateString() }}</span></span>
-                        <span v-if="column.sortable"><span v-if="column.sortable.type !=='date'">{{item[column.key]}}</span></span>
-                        <span v-else>{{item[column.key]}}</span>
-                    </td>
-                    <td v-if="!table.editableColumnName" v-for="(column, index) in table.columns" :key="index" v-bind:contenteditable="table.editable">
-                        <span>{{item[column]}}</span>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" v-model="selectAll"></th>
+                        <th v-if="table.editableColumnName" v-bind:class="{'cursor-pointer': column.sortable && table.sortable }" v-for="(column, index) in table.editableHeaderColumnsNumbers" :key="index" @click="sortHandaler(column)">
+                            <span>{{column.label}}</span>
+                        </th>
+                        <th v-if="!table.editableColumnName" v-bind:class="{'cursor-pointer': table.sortable }" v-for="(column, index) in table.columns" :key="index" @click="sortHandaler(column)">
+                            <span>{{column}}</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody v-bind:style="{ height: table.heightValue + 'px' }">
+                    <tr v-for="(item, index) in table.items" :key="index">
+                        <td>
+                            <input type="checkbox" class="cursor-pointer" v-model="selected" :value="item.id" number>
+                        </td>
+                        <td v-if="table.editableColumnName" v-for="(column, index) in table.editableHeaderColumnsNumbers" :key="index" v-bind:contenteditable="table.editable">
+                            <span v-if="column.sortable"><span v-if="column.sortable.type ==='date'">{{ (new Date(item[column.key])).toDateString() }}</span></span>
+                            <span v-if="column.sortable"><span v-if="column.sortable.type !=='date'">{{item[column.key]}}</span></span>
+                            <span v-else>{{item[column.key]}}</span>
+                        </td>
+                        <td v-if="!table.editableColumnName" v-for="(column, index) in table.columns" :key="index" v-bind:contenteditable="table.editable">
+                            <span>{{item[column]}}</span>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
             <div class="pagination">
                 <a href="#" @click="getFirstPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.firstArrow}]">&laquo;</a>
@@ -31,14 +39,14 @@
                     <span v-if="pagination.spreed.firstDot">...</span>
                 </a>
                 <a v-if="pagination.page.page2" href="#" @click="selectPage(2,pagination.pageNumber.second,'left')" v-bind:class="[pagination.size, { active: pagination.isActivePage === 2}]">
-                                                        {{pagination.pageNumber.second}}
-                                                    </a>
+                                                                {{pagination.pageNumber.second}}
+                                                            </a>
                 <a v-if="pagination.page.page3" href="#" @click="selectPage(3,pagination.pageNumber.third,'middle')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 3}]">
-                                                        {{pagination.pageNumber.third}}
-                                                    </a>
+                                                                {{pagination.pageNumber.third}}
+                                                            </a>
                 <a v-if="pagination.page.page4" href="#" @click="selectPage(4,pagination.pageNumber.four,'right')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 4}]">
-                                                        {{pagination.pageNumber.four}}
-                                                    </a>
+                                                                {{pagination.pageNumber.four}}
+                                                            </a>
                 <a v-if="pagination.page.page5" href="#" @click="selectPage(5,pagination.pageNumber.five)" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 5}]">
                     <span v-if="!pagination.spreed.lastDot">{{pagination.pageNumber.five}}</span>
                     <span v-if="pagination.spreed.lastDot">...</span>
@@ -46,7 +54,6 @@
     
                 <a href="#" @click="getLatterPage('right')" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&rsaquo;</a>
                 <a href="#" @click="getLastPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&raquo;</a>
-                <!-- <p>Current Page:{{this.currentPage}}</p> -->
             </div>
         </div>
     </div>
@@ -67,6 +74,7 @@
                 currentPage: this.config.paginationConfig.currentPage || 1,
                 limit: this.config.paginationConfig.perPages || 10,
                 loadingData: false,
+                selected: [],
                 table: {
                     columns: [],
                     editableColumnName: false,
@@ -74,7 +82,8 @@
                     editable: false,
                     sortable: false,
                     fields: {},
-                    items: []
+                    items: [],
+                    heightValue: '',
                 },
                 pagination: {
                     numberOfPages: Math.ceil(this.config.paginationConfig.totalRows / this.config.paginationConfig.perPages) || 1,
@@ -115,6 +124,10 @@
                 this.tableExecuteHadaler(this.config);
             }
     
+            if (this.config.heigth && this.config.heigth !== '') {
+                this.table.heightValue = this.config.heigth;
+            }
+    
             // Pagination
             for (let index = 1; index <= this.pagination.numberOfPages; index++) {
                 switch (index) {
@@ -135,6 +148,23 @@
                         break;
                     default:
                         break;
+                }
+            }
+        },
+        computed: {
+            selectAll: {
+                get: function() {
+                    return this.table.items ? this.selected.length == this.table.items.length : false;
+                },
+                set: function(value) {
+                    var selected = [];
+    
+                    if (value) {
+                        this.table.items.forEach(function(item) {
+                            selected.push(item.id);
+                        });
+                    }
+                    this.selected = selected;
                 }
             }
         },
@@ -179,7 +209,7 @@
                 this.loadingData = false;
                 configObject.items = response.data;
                 this.tableExecuteHadaler(configObject);
-                
+    
             },
             tableExecuteHadaler(configObject) {
                 if (configObject.items.length > 0) {
@@ -344,6 +374,9 @@
                 } else {
                     this.pagination.isActivePage = page;
                 }
+            },
+            selected(val) {
+                this.$emit('input', val);
             }
         }
     }

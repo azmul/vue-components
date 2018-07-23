@@ -1,12 +1,23 @@
 <template>
     <div class="overlay">
         <div class="search-wrapper">
-            <div class="input-field-wrapper">
-                <input class="input-field" @focus="toggleOnOff" @blur="toggleOnOff" type="text" v-model="keyword" placeholder="Search ..." v-bind:autofocus="autofocusHandaler" />
+            <div class="select-div">
+                <span v-for="(data,selectedDataIndex) in selectedData" :key="selectedDataIndex" class="select-span"> 
+                        <a href="#" v-on:click="deleteSelected(data.index,selectedDataIndex)" class="close"></a> <span class="select-text">{{data.text}}</span>
+                </span>
             </div>
+            <input class="input-field" 
+                   @focus="toggleOnOff" 
+                   @blur="toggleOnOff" 
+                   type="text" 
+                   v-model="keyword" 
+                   :placeholder="title"
+                   v-bind:autofocus="autofocusHandaler" 
+                   ref='search'/>
+    
             <select class="select-field" v-if="selectHandalerShow" :multiple="true" v-model="inputVal">
                     <option 
-                            v-if="filteredList.length>0"
+                            v-if="filteredList.length>0 && !option.selected"
                             v-for="(option,index) in filteredList" 
                             :disabled="option.disabled"
                             :key="index" 
@@ -35,6 +46,7 @@
                 datas: [],
                 dataList: this.config.options,
                 selectChange: false,
+                selectedData: [],
                 autofocusHandaler: true
             }
         },
@@ -61,24 +73,48 @@
                 } else {
                     this.filteredListData(searchValue);
                 }
+            },
+            deleteSelected(index,selectedDataIndex) {
+                this.datas[index].selected = false;
+                this.selectedData.splice(selectedDataIndex, 1);
+                this.$refs.search.focus();
             }
         },
         created() {
+            for (let index = 0; index < this.dataList.length; index++) {
+                this.dataList[index].selected = false;
+                this.dataList[index].index = index;
+            }
             this.datas = [...this.dataList];
         },
         computed: {
             filteredList() {
                 return this.datas;
+            },
+            title() {
+                return this.selectedData.length > 0 ? '' : 'Select your favourites...';
             }
         },
         watch: {
             inputVal: function(newValue) {
-                if (newValue.length > 0) {
-                    if (newValue.constructor === Array) {
+                if (newValue.constructor === Array) {
+                    this.$refs.search.focus();
+                    if (newValue.length > 0) {
                         this.selectChange = true;
-                        this.keyword = newValue[0].text;
-                        this.$emit('input', newValue[0].value);
+                        this.keyword = '';
+                        let newObj = newValue[0];
+                        let idx = newObj["index"];
+                        this.datas[idx].selected = true;
+                        this.selectedData.push({
+                            value: newValue[0].value,
+                            text: newValue[0].text,
+                            index: idx
+                        });
+                        this.$emit('input', this.selectedData);
+                    } else {
+                        return false;
                     }
+    
                 }
             },
             keyword: function(newValue) {
@@ -93,7 +129,7 @@
 </script>
 
 <style scoped>
-    @import './Search.css';
+    @import './Multiselect.css';
 </style>
 
 

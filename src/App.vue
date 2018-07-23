@@ -1,38 +1,44 @@
 <template>
   <div id="app">
-
+  
     <!-- <select-component v-model="selected" v-bind:config="selectConfig">
-      <optgroup v-if="selectConfig.groupOptions" v-bind:label="selectConfig.groupOptions.label">
-        <option 
-            v-for="(option,index) in selectConfig.groupOptions.options" 
-            :disabled="option.disabled"
-            :key="index" 
-            :value="option.value">
-            {{option.text}}
-        </option>
-      </optgroup>
-    </select-component> -->
+        <optgroup v-if="selectConfig.groupOptions" v-bind:label="selectConfig.groupOptions.label">
+          <option 
+              v-for="(option,index) in selectConfig.groupOptions.options" 
+              :disabled="option.disabled"
+              :key="index" 
+              :value="option.value">
+              {{option.text}}
+          </option>
+        </optgroup>
+      </select-component> -->
+  
+    <!-- <MultiSelect v-model="selected" v-bind:config="selectSearchConfig"></MultiSelect> -->
+    <!-- <Search v-model="selected" v-bind:config="selectConfig"></Search> -->
+    <CumtomTable v-model="selected" v-bind:config="tableConfig" />
+    <div>
+      Selected:{{selected}}
+    </div>
     
-    <search v-model="selected" v-bind:config="selectSearchConfig"></search>
-    Selected:{{selected}}
-    <!-- <Table v-bind:config="tableConfig" /> -->
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
   </div>
 </template>
 
 <script>
-  import SelectComponent from './components/Select/Select.vue';
-  import Search from './components/Search/Search.vue';
+  //import SelectComponent from './components/Select/Select.vue';
+  //import MultiSelect from './components/MultiSelect/Multiselect.vue';
+  //import Search from './components/Search/Search.vue';
   //import Table from './components/Table/Table.vue';
-  //import Table from './components/TableWithPagination/TableWithPagination.vue';
+  import CumtomTable from './components/TableWithPagination/TableWithPagination.vue';
   //import Pagination from './components/Pagination/PaginationTwo.vue';
   //import Pagination from './components/Pagination/PaginationTwo.vue';
   export default {
     name: 'app',
     components: {
-      SelectComponent,
-      Search,
-      //Table,
+      //MultiSelect,
+      //SelectComponent,
+      //Search
+      CumtomTable,
       //Pagination
     },
     data() {
@@ -41,6 +47,7 @@
           url: 'https://jsonplaceholder.typicode.com/posts',
           editable: true,
           sortable: false,
+          heigth: '100',
           fields: {
             // isActive: {
             //   label: 'Is Active'
@@ -155,8 +162,8 @@
             }
           ],
           groupOptions: {
-            label:'Group Options',
-            options:[{
+            label: 'Group Options',
+            options: [{
                 text: 'Item 1',
                 value: 'first'
               },

@@ -1,0 +1,99 @@
+.overlay {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+  }
+
+  .search-wrapper {
+    position: relative;
+    width: 80%;
+    text-align: center;
+    margin: auto;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 0px 5px;
+  }
+
+  .overlay input[type=text] {
+    padding: 10px 5px;
+    font-size: 14px;
+    border: none;
+    float: left;
+    background: white;
+    outline: 0;
+  }
+
+  .overlay button {
+    float: left;
+    width: 20%;
+    padding: 15px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .overlay .select-field {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    width: 100%;
+  }
+  
+  .optionClass, 
+  .optionInactiveClass{
+    padding: 14px 9px;
+  }
+
+  .optionClass:hover{
+    background-color: #eef5ff;
+    color: #000000;
+    cursor: pointer;
+  }
+
+  .close {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 4px 0px 0px 4px;
+    padding: 0px 10px;
+  }
+  .close:hover {
+    opacity: 1;
+    background-color:rgba(0,0,0,0.1)
+  }
+  .close:before, .close:after {
+    position: absolute;
+    top: 6px;
+    content: ' ';
+    height: 11px;
+    width: 2px;
+    background-color: #007eff;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
+.select-div{
+  float: left;
+}
+.select-span{
+  padding: 0px  5px 0px 0px;
+}
+.select-text{
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 0px 4px 4px 0px;
+    border-left: none;
+    padding: 0px 5px;
+    font-size: 16px;
+    color: #007eff;
+}
+  
