@@ -2,6 +2,7 @@
     <div>
         <div v-if="loadingData" class="loader"></div>
         <div>
+            <input type="text" class="search-control" placeholder="Search ..." v-model="search" />
             <table v-if="!loadingData" id="dynamic-table">
                 <thead>
                     <tr>
@@ -30,31 +31,48 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="pagination">
-                <a href="#" @click="getFirstPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.firstArrow}]">&laquo;</a>
-                <a href="#" @click="getPreviousPage('left')" v-bind:class="[pagination.size,{'disabled': pagination.disableField.firstArrow}]">&lsaquo;</a>
+            <ul>
+                <li>
+                    <div class="pagination">
+                        <a href="#" @click="getFirstPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.firstArrow}]">&laquo;</a>
+                        <a href="#" @click="getPreviousPage('left')" v-bind:class="[pagination.size,{'disabled': pagination.disableField.firstArrow}]">&lsaquo;</a>
     
-                <a v-if="pagination.page.page1" href="#" @click="selectPage(1,pagination.pageNumber.first)" v-bind:class="[pagination.size, { active: pagination.isActivePage === 1}]">
-                    <span v-if="!pagination.spreed.firstDot">{{pagination.pageNumber.first}}</span>
-                    <span v-if="pagination.spreed.firstDot">...</span>
-                </a>
-                <a v-if="pagination.page.page2" href="#" @click="selectPage(2,pagination.pageNumber.second,'left')" v-bind:class="[pagination.size, { active: pagination.isActivePage === 2}]">
-                                                                {{pagination.pageNumber.second}}
-                                                            </a>
-                <a v-if="pagination.page.page3" href="#" @click="selectPage(3,pagination.pageNumber.third,'middle')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 3}]">
-                                                                {{pagination.pageNumber.third}}
-                                                            </a>
-                <a v-if="pagination.page.page4" href="#" @click="selectPage(4,pagination.pageNumber.four,'right')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 4}]">
-                                                                {{pagination.pageNumber.four}}
-                                                            </a>
-                <a v-if="pagination.page.page5" href="#" @click="selectPage(5,pagination.pageNumber.five)" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 5}]">
-                    <span v-if="!pagination.spreed.lastDot">{{pagination.pageNumber.five}}</span>
-                    <span v-if="pagination.spreed.lastDot">...</span>
-                </a>
+                        <a v-if="pagination.page.page1" href="#" @click="selectPage(1,pagination.pageNumber.first)" v-bind:class="[pagination.size, { active: pagination.isActivePage === 1},{'disabled': pagination.spreed.firstDot}]">
+                            <span v-if="!pagination.spreed.firstDot">{{pagination.pageNumber.first}}</span>
+                            <span v-if="pagination.spreed.firstDot">...</span>
+                        </a>
+                        <a v-if="pagination.page.page2" href="#" @click="selectPage(2,pagination.pageNumber.second,'left')" v-bind:class="[pagination.size, { active: pagination.isActivePage === 2}]">
+                                                                                    {{pagination.pageNumber.second}}
+                                                                                </a>
+                        <a v-if="pagination.page.page3" href="#" @click="selectPage(3,pagination.pageNumber.third,'middle')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 3}]">
+                                                                                    {{pagination.pageNumber.third}}
+                                                                                </a>
+                        <a v-if="pagination.page.page4" href="#" @click="selectPage(4,pagination.pageNumber.four,'right')" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 4}]">
+                                                                                    {{pagination.pageNumber.four}}
+                                                                                </a>
+                        <a v-if="pagination.page.page5" href="#" @click="selectPage(5,pagination.pageNumber.five)" v-bind:class="[pagination.size,{ active: pagination.isActivePage === 5},{'disabled': pagination.spreed.lastDot}]">
+                            <span v-if="!pagination.spreed.lastDot">{{pagination.pageNumber.five}}</span>
+                            <span v-if="pagination.spreed.lastDot">...</span>
+                        </a>
     
-                <a href="#" @click="getLatterPage('right')" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&rsaquo;</a>
-                <a href="#" @click="getLastPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&raquo;</a>
-            </div>
+                        <a href="#" @click="getLatterPage('right')" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&rsaquo;</a>
+                        <a href="#" @click="getLastPage()" v-bind:class="[pagination.size,{'disabled': pagination.disableField.lastArrow}]">&raquo;</a>
+                    </div>
+                </li>
+                <li class="rows-per-page">
+                    <span>Rows per page:
+                            <select v-model="limit" >
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="all">All</option>
+                            </select>
+                        </span>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -75,6 +93,8 @@
                 limit: this.config.paginationConfig.perPages || 10,
                 loadingData: false,
                 selected: [],
+                itemsData:[],
+                search:'',
                 table: {
                     columns: [],
                     editableColumnName: false,
@@ -113,7 +133,9 @@
                         firstDot: false,
                         lastDot: true
                     }
-                }
+                },
+                sortKey: this.config.sortKey,
+                sortOrder: ['asc'],
             }
         },
         created() {
@@ -169,51 +191,59 @@
             }
         },
         methods: {
+            itemsSorted() {
+                this.table.items = this.$lodash.orderBy(this.table.items, this.sortKey, this.sortOrder);
+            },
             sortHandaler(columnInfo) {
-                let sortKey = null;
+                let key = null;
                 if (this.table.sortable) {
                     if (this.table.editableColumnName) {
                         if (columnInfo.sortable) {
-                            sortKey = columnInfo.key;
+                            key = columnInfo.key;
                         }
                     } else {
-                        sortKey = columnInfo;
+                        key = columnInfo;
                     }
                     if (columnInfo.sortable.type === 'date') {
                         return this.table.items.sort((a, b) => {
-                            return new Date(a[sortKey]) - new Date(b[sortKey]);
+                            return new Date(a[key]) - new Date(b[key]);
                         });
                     } else {
-                        this.table.items.sort((a, b) => {
-                            if (a[sortKey] > b[sortKey]) {
-                                return 1;
-                            }
-                            if (a[sortKey] < b[sortKey]) {
-                                return -1;
-                            }
-                            return 0;
-                        });
+                        if (key == this.sortKey) {
+                            this.sortOrder = (this.sortOrder == 'asc') ? 'desc' : 'asc';
+                        } else {
+                            this.sortKey = key;
+                            this.sortOrder = 'asc';
+                        }
+                        this.itemsSorted();
                     }
     
                 } else {
                     return 0;
                 }
             },
-            async serverCallForData(configObject) {
+            async serverCallForData(configObject, all) {
                 this.loadingData = true;
-                let page = this.currentPage;
-                let limit = this.limit;
-                let baseUrl = configObject.url;
-                let url = `${baseUrl}?_page=${page}&_limit=${limit}`;
+                let page, limit, baseUrl, url;
+                page = this.currentPage;
+                limit = this.limit;
+                baseUrl = configObject.url;
+                if (all === 'all') {
+                    url = baseUrl;
+                } else {
+                    url = `${baseUrl}?_page=${page}&_limit=${limit}`;
+                }
                 let response = await axios.get(url);
                 this.loadingData = false;
                 configObject.items = response.data;
+                this.itemsData = response.data;
                 this.tableExecuteHadaler(configObject);
     
             },
             tableExecuteHadaler(configObject) {
                 if (configObject.items.length > 0) {
-                    this.table.items = configObject.items;
+                    this.table.items = [...configObject.items];
+                    this.itemsSorted();
                     this.table.editable = configObject.editable;
                     this.table.sortable = configObject.sortable;
                     let headerColumnsNumber = [];
@@ -375,8 +405,33 @@
                     this.pagination.isActivePage = page;
                 }
             },
+            limit: function(limit) {
+                if (limit === 'all') {
+                    this.serverCallForData(this.config, limit);
+                } else {
+                    this.serverCallForData(this.config);
+                }
+    
+            },
             selected(val) {
                 this.$emit('input', val);
+            },
+            search: function() {
+                let searchItemsFilter = [...this.itemsData];
+                if (this.search) {
+                    searchItemsFilter.forEach((item, itemIndex) => {
+                        let keys = Object.keys(item);
+                        for (let index = 0; index < keys.length; index++) {
+                            let type = typeof item[keys[index]];
+                            if (type === 'number') {
+                                searchItemsFilter[itemIndex][keys[index]] = searchItemsFilter[itemIndex][keys[index]].toString();
+                            }
+                        }
+                    })
+                    this.table.items = searchItemsFilter.filter(item => item.id.toUpperCase().includes(this.search.toUpperCase()) || item.userId.toUpperCase().includes(this.search.toUpperCase()) || item.title.toUpperCase().includes(this.search.toUpperCase()) || item.body.toUpperCase().includes(this.search.toUpperCase()));
+                } else {
+                    this.table.items = searchItemsFilter;
+                }
             }
         }
     }

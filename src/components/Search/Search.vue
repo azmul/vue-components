@@ -15,7 +15,7 @@
                             {{option.text}}
                     </option>
                     <option v-if="filteredList.length===0">{{noResultFound}}</option>
-                </select>
+            </select>
         </div>
     </div>
 </template>
