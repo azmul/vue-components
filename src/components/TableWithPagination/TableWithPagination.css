@@ -34,6 +34,7 @@
     float: left;
     text-decoration: none;
     border: 1px solid #ddd;
+    width: 40px;
 }
 
 .pagination a.active {
