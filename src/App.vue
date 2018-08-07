@@ -51,6 +51,7 @@
   
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
     <PaginationDecouple />
+    <TableDecoupled v-bind:config="tableConfig" />
   </div>
 </template>
 
@@ -69,6 +70,7 @@ import Table from './components/Table/Table';
 import CumtomTable from './components/TableWithPagination/TableWithPagination';
 import Pagination from './components/Pagination/Pagination';
 import PaginationDecouple from './components/PaginationDecouple/Pagination';
+import TableDecoupled from './components/TableDecoupled/Table';
 
 export default {
   name: 'app',
@@ -84,7 +86,8 @@ export default {
     Search,
     CumtomTable,
     Pagination,
-    PaginationDecouple
+    PaginationDecouple,
+    TableDecoupled
   },
   data() {
     return {

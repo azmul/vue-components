@@ -40,12 +40,14 @@
 </template>
 
 <script>
+import { serverBus } from '../../main';
+
 export default {
   data() {
     return {
-      customLimit:[5,10,15,20,25,'all'],
-      currentPage:  1,
-      limit:  10,
+      customLimit: [5, 10, 15, 20, 25, 'all'],
+      currentPage: 1,
+      limit: 10,
       pagination: {
         numberOfPages: 12,
         isActivePage: 1,
@@ -75,7 +77,7 @@ export default {
           lastDot: true,
         },
       },
-    }
+    };
   },
   created() {
     // Pagination
@@ -101,7 +103,7 @@ export default {
       }
     }
   },
-  methods:{
+  methods: {
     disableArrowHandaler(firstArrow, lastArrow) {
       this.pagination.disableField.firstArrow = firstArrow;
       this.pagination.disableField.lastArrow = lastArrow;
@@ -166,13 +168,16 @@ export default {
         return false;
       }
     },
+    sendPageLimit(page, limit) {
+      serverBus.$emit('serverSelected', { page: page, limit: limit });
+    },
   },
-  watch:{
+  watch: {
     currentPage: function(page) {
       let pages = this.pagination.numberOfPages,
         side = this.pagination.side;
-      console.log(page);
-      //this.serverCallForData(this.config); // call to server
+
+      this.sendPageLimit(page, this.limit);
 
       switch (page) {
         case pages: {
@@ -224,14 +229,9 @@ export default {
       }
     },
     limit: function(limit) {
-      console.log(limit);
-      if (limit === 'all') {
-        //this.serverCallForData(this.config, limit);
-      } else {
-        //this.serverCallForData(this.config);
-      }
+      this.sendPageLimit(this.currentPage, limit);
     },
-  }
+  },
 };
 </script>
 <style scoped>
