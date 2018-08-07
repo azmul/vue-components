@@ -3,7 +3,7 @@ import App from './App.vue';
 import { store } from './store';
 import lodash from 'lodash';
 
-export const serverBus = new Vue();
+export const EventBus = new Vue();
 
 
 Object.defineProperty(Vue.prototype, '$lodash', { value: lodash });

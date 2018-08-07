@@ -40,18 +40,24 @@
 </template>
 
 <script>
-import { serverBus } from '../../main';
+import { EventBus } from '../../main';
 
 export default {
+  props:{
+    config:{
+      type:Object,
+      required: true
+    }
+  },
   data() {
     return {
-      customLimit: [5, 10, 15, 20, 25, 'all'],
-      currentPage: 1,
-      limit: 10,
+      customLimit: this.config.customLimit,
+      currentPage: this.config.currentPage || 1,
+      limit: this.config.limit || 10,
       pagination: {
         numberOfPages: 12,
-        isActivePage: 1,
-        size: 'medium',
+        isActivePage: this.config.currentPage || 1,
+        size: this.config.size,
         side: null,
         sideClick: false,
         page: {
@@ -169,7 +175,7 @@ export default {
       }
     },
     sendPageLimit(page, limit) {
-      serverBus.$emit('serverSelected', { page: page, limit: limit });
+      EventBus.$emit(this.config.funcName, { page: page, limit: limit });
     },
   },
   watch: {

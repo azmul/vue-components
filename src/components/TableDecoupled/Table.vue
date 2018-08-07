@@ -2,7 +2,7 @@
     <div>
         <div v-if="loadingData" class="loader"></div>
         <div>
-            <input type="text" class="search-control" placeholder="Search ..." v-model="search" />
+            <!-- <input type="text" class="search-control" placeholder="Search ..." v-model="search" /> -->
             <table v-if="!loadingData" id="dynamic-table">
                 <thead>
                     <tr>
@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios';
-import { serverBus } from '../../main';
+import { EventBus } from '../../main';
 
 export default {
   props: {
@@ -81,8 +81,7 @@ export default {
     }
   },
   mounted() {
-    serverBus.$on('serverSelected', data => {
-      console.log(this.config);
+    EventBus.$on(this.config.funcName, data => {
       this.serverCallForData(this.config,data);
     });
   },
@@ -218,10 +217,12 @@ export default {
             }
           }
         });
-        
         this.table.items = searchItemsFilter.filter(
           (item,index) =>
-            item[this.table.editableHeaderColumnsNumbers[index].key].toUpperCase().includes(this.search.toUpperCase()) 
+            item.id.toUpperCase().includes(this.search.toUpperCase()) ||
+            item.userId.toUpperCase().includes(this.search.toUpperCase()) ||
+            item.title.toUpperCase().includes(this.search.toUpperCase()) ||
+            item.body.toUpperCase().includes(this.search.toUpperCase()),
         );
       } else {
         this.table.items = searchItemsFilter;

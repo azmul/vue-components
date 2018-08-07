@@ -50,8 +50,8 @@
       </div> -->
   
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
-    <PaginationDecouple />
-    <TableDecoupled v-bind:config="tableConfig" />
+    <PaginationDecouple :config="paginationConfig"  />
+    <TableDecoupled :config="tableConfig" />
   </div>
 </template>
 
@@ -110,6 +110,7 @@ export default {
         heigth: '500',
         sortKey: 'id',
         customLimit:[5,10,15,20,25,'all'],
+        funcName:'serverSelected',
         fields: {
           // isActive: {
           //   label: 'Is Active'
@@ -194,8 +195,11 @@ export default {
       },
       paginationConfig: {
         totalRows: 1000,
-        perPages: 10,
+        currentPage: 1,
+        limit: 10,
         size: 'medium',
+        customLimit: [5, 10, 15, 20, 25, 'all'],
+        funcName:'serverSelected',
       },
       selected: null,
       selectConfig: {
