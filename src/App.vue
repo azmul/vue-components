@@ -44,14 +44,11 @@
         </p>
       </tab>
     </tabs> -->
-  
-    <!-- <div>
-        Selected:{{selected}}
-      </div> -->
-  
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
-    <PaginationDecouple :config="paginationConfig"  />
-    <TableDecoupled :config="tableConfig" />
+
+    <TableDecoupled v-model="selected" :config="tableConfig" />
+    <!-- <PaginationDecouple :config="paginationConfig"  /> -->
+
   </div>
 </template>
 
@@ -87,7 +84,7 @@ export default {
     CumtomTable,
     Pagination,
     PaginationDecouple,
-    TableDecoupled
+    TableDecoupled,
   },
   data() {
     return {
@@ -109,33 +106,9 @@ export default {
         sortable: true,
         heigth: '500',
         sortKey: 'id',
-        customLimit:[5,10,15,20,25,'all'],
-        funcName:'serverSelected',
+        customLimit: [5, 10, 15, 20, 25, 'all'],
+        funcName: 'serverSelected',
         fields: {
-          // isActive: {
-          //   label: 'Is Active'
-          // },
-          // age: {
-          //   label: 'Age',
-          //   sortable: {
-          //     type: 'number'
-          //   }
-          // },
-          // last_name: {
-          //   label: 'Last name',
-          //   sortable: {
-          //     type: 'string'
-          //   }
-          // },
-          // date: {
-          //   label: 'Birth Date',
-          //   sortable: {
-          //     type: 'date'
-          //   }
-          // },
-          // first_name: {
-          //   label: 'First name'
-          // }
           id: {
             label: 'ID',
             sortable: {
@@ -187,10 +160,12 @@ export default {
           },
         ],
         paginationConfig: {
-          totalRows: 100,
+          totalRows: 1000,
           currentPage: 1,
-          perPages: 10,
+          limit: 10,
           size: 'medium',
+          customLimit: [5, 10, 15, 20, 25, 'all'],
+          funcName: 'serverSelected',
         },
       },
       paginationConfig: {
@@ -199,7 +174,7 @@ export default {
         limit: 10,
         size: 'medium',
         customLimit: [5, 10, 15, 20, 25, 'all'],
-        funcName:'serverSelected',
+        funcName: 'serverSelected',
       },
       selected: null,
       selectConfig: {

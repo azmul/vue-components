@@ -2,7 +2,6 @@
     <div>
         <div v-if="loadingData" class="loader"></div>
         <div>
-            <!-- <input type="text" class="search-control" placeholder="Search ..." v-model="search" /> -->
             <table v-if="!loadingData" id="dynamic-table">
                 <thead>
                     <tr>
@@ -32,14 +31,19 @@
                 </tbody>
             </table>
         </div>
+        <PaginationDecouple v-if="paginationShow" :config="config.paginationConfig" @pageLimit="pageLimitHandler" />
     </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { EventBus } from '../../main';
+//import { EventBus } from '../../main';
+import PaginationDecouple from '../PaginationDecouple/Pagination';
 
 export default {
+  components:{
+    PaginationDecouple
+  },
   props: {
     config: {
       type: Object,
@@ -55,6 +59,7 @@ export default {
       itemsData: [],
       customLimit: [],
       search: '',
+      paginationShow: false,
       table: {
         columns: [],
         editableColumnName: false,
@@ -75,16 +80,20 @@ export default {
     } else {
       this.tableExecuteHadaler(this.config);
     }
-
     if (this.config.heigth && this.config.heigth !== '') {
       this.table.heightValue = this.config.heigth;
     }
+    if(this.config.paginationConfig){
+      if(Object.keys(this.config.paginationConfig).length>0){
+        this.paginationShow = true;
+      }
+    }
   },
-  mounted() {
-    EventBus.$on(this.config.funcName, data => {
-      this.serverCallForData(this.config,data);
-    });
-  },
+  // mounted() {
+  //   EventBus.$on(this.config.funcName, data => {
+  //     this.serverCallForData(this.config,data);
+  //   });
+  // },
   computed: {
     selectAll: {
       get: function() {
@@ -105,6 +114,9 @@ export default {
     },
   },
   methods: {
+    pageLimitHandler(data){
+      this.serverCallForData(this.config,data);
+    },
     itemsSorted() {
       this.table.items = this.$lodash.orderBy(
         this.table.items,
@@ -202,32 +214,7 @@ export default {
   watch: {
     selected(val) {
       this.$emit('input', val);
-    },
-    search: function() {
-      let searchItemsFilter = [...this.itemsData];
-      if (this.search) {
-        searchItemsFilter.forEach((item, itemIndex) => {
-          let keys = Object.keys(item);
-          for (let index = 0; index < keys.length; index++) {
-            let type = typeof item[keys[index]];
-            if (type === 'number') {
-              searchItemsFilter[itemIndex][keys[index]] = searchItemsFilter[
-                itemIndex
-              ][keys[index]].toString();
-            }
-          }
-        });
-        this.table.items = searchItemsFilter.filter(
-          (item,index) =>
-            item.id.toUpperCase().includes(this.search.toUpperCase()) ||
-            item.userId.toUpperCase().includes(this.search.toUpperCase()) ||
-            item.title.toUpperCase().includes(this.search.toUpperCase()) ||
-            item.body.toUpperCase().includes(this.search.toUpperCase()),
-        );
-      } else {
-        this.table.items = searchItemsFilter;
-      }
-    },
+    }
   },
 };
 </script>

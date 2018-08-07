@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { EventBus } from '../../main';
+//import { EventBus } from '../../main';
 
 export default {
   props:{
@@ -175,7 +175,8 @@ export default {
       }
     },
     sendPageLimit(page, limit) {
-      EventBus.$emit(this.config.funcName, { page: page, limit: limit });
+      //EventBus.$emit(this.config.funcName, { page: page, limit: limit });
+      this.$emit('pageLimit', { page: page, limit: limit });
     },
   },
   watch: {
