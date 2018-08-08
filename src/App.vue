@@ -46,8 +46,9 @@
     </tabs> -->
     <!-- <Pagination  v-bind:config="tableConfig" /> -->
 
-    <TableDecoupled v-model="selected" :config="tableConfig" />
+    <!-- <TableDecoupled v-model="selected" :config="tableConfig" /> -->
     <!-- <PaginationDecouple :config="paginationConfig"  /> -->
+    <TableRnd :config="tableConfig" />
 
   </div>
 </template>
@@ -68,6 +69,7 @@ import CumtomTable from './components/TableWithPagination/TableWithPagination';
 import Pagination from './components/Pagination/Pagination';
 import PaginationDecouple from './components/PaginationDecouple/Pagination';
 import TableDecoupled from './components/TableDecoupled/Table';
+import TableRnd from  './components/TableRnd';
 
 export default {
   name: 'app',
@@ -85,6 +87,7 @@ export default {
     Pagination,
     PaginationDecouple,
     TableDecoupled,
+    TableRnd
   },
   data() {
     return {
@@ -114,12 +117,18 @@ export default {
             sortable: {
               type: 'number',
             },
+            formator: function(value){
+              return `return ${value}`;
+            }
           },
           body: {
             label: 'Body',
             sortable: {
               type: 'string',
             },
+             formator: function(value){
+               return `return ${value}`;
+             }
           },
           title: {
             label: 'Title',
@@ -294,6 +303,14 @@ export default {
       ],
     };
   },
+  methods:{
+    bodyMethod(){
+      return 'body';
+    },
+    idMethod(){
+      return 'id';
+    }
+  }
 };
 </script>
 
